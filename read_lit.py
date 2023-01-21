@@ -4,6 +4,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 import os
+import re
 
 
 def pdf_to_txt(pdf_file, txt_file, password=None):
@@ -33,8 +34,41 @@ def pdf_to_txt(pdf_file, txt_file, password=None):
         f.write(text)
 
 
-pdf_file = 'ExcavationReportTombNo1.pdf'
-txt_file = 'ExcavationReportTombNo1.txt'
+def return_pages(text):
+    starts = [m.start() for m in re.finditer('\x0c', text)]
+    pages = []
+    # print(starts)
+    if starts[0] != 0:
+        print(f'starts[0] = {starts[0]}')
+        page = text[0:starts[0]]
+        print(page, '\n\n\n\n')
+        pages.append(page)
+        for i in range(len(starts)-1):
+            start = starts[i]
+            end = starts[i+1]-1
+            print(f'starts[i] at {start} and goes to {end}')
+            page = text[start:end]
+            print(page, '\n\n\n\n')
+            pages.append(page)
+    else:
+        for i in range(len(starts)):
+            page = text[starts[i]:starts[i+1]-1]
+            pages.append(page)
+    print(pages)
+    return pages
+
+
+pdf_file = 'The_1974_excavation_of_Hayonim_terrace_Israel_A_br.pdf'
+txt_file = 'The_1974_excavation_of_Hayonim_terrace_Israel_A_br.txt'
 pdf_to_txt(pdf_file, txt_file)
 with open(txt_file, 'r') as f:
-    print(f.readlines())
+    text = f.read()
+print(text)
+
+pages = return_pages(text)
+print(len(pages))
+for page in pages:
+    print(pages, '\n\n\n\n')
+
+new_page = '\x0c'
+new_line = '\n'
