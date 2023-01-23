@@ -9,7 +9,7 @@ import re
 
 def pdf_to_txt(pdf_file, password=None):  # txt_file
     # Open the PDF file
-    with open(pdf_file, 'rb') as f:
+    with open(f'./pdfs/{pdf_file}', 'rb') as f:
         # Create resource manager
         rsrcmgr = PDFResourceManager()
         if password:
@@ -79,6 +79,8 @@ txt_file = 'The_1974_excavation_of_Hayonim_terrace_Israel_A_br.txt'
 # pdf_file = 'ExcavationReportTombNo1.pdf'
 # txt_file = 'ExcavationReportTombNo1.txt'
 papers = ['The_1974_excavation_of_Hayonim_terrace_Israel_A_br.pdf', 'ExcavationReportTombNo1.pdf']
+papers = os.listdir('./pdfs')
+print(papers)
 for paper in papers:
     print('\n', paper)
     text = pdf_to_txt(paper, password=None)
